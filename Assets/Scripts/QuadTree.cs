@@ -10,7 +10,6 @@ public class QuadTree
 
     QuadTree[] children;
     int level;
-    bool divided;
 
     public QuadTree(int level, Rect bounds)
     {
@@ -18,6 +17,7 @@ public class QuadTree
         this.bounds = bounds;
         this.objectList = new List<Rect>();
         children = new QuadTree[4];
+        ShowBoundries();
     }
 
     public void Clear()
@@ -45,47 +45,49 @@ public class QuadTree
         children[1] = new QuadTree(level + 1, new Rect(x, y, subWidth, subHeight));
         children[2] = new QuadTree(level + 1, new Rect(x, y + subHeight, subWidth, subHeight));
         children[3] = new QuadTree(level + 1, new Rect(x + subWidth, y + subHeight, subWidth, subHeight));
-
-        divided = true;
     }
 
     int GetIndex(Rect pRect)
     {
         int index = -1;
 
-        float verticalMidpoint = bounds.x + bounds.width / 2;
-        float horizontalMidpoint = bounds.y + bounds.height / 2;
+        float verticalMidpoint = bounds.x + (bounds.width / 2);
+        float horizontalMidpoint = bounds.y + (bounds.height / 2);
 
-        // Top quadrant
-        bool topQuadrant = (pRect.y < horizontalMidpoint && pRect.y + pRect.height < horizontalMidpoint);
+        bool topQuadrant = pRect.y <= horizontalMidpoint;
+        bool bottomQuadrant = (pRect.y - pRect.height) >= horizontalMidpoint;
 
-        // Bottom quadrant
-        bool bottomQuadrant = (pRect.y > horizontalMidpoint);
-
-        // Left quadrant
-        if (pRect.x < verticalMidpoint && pRect.x + pRect.width < verticalMidpoint)
-        {
-            // Top-left
-            if (topQuadrant)
-                index = 1;
-            // Bottom-left
-            else if (bottomQuadrant)
-                index = 2;
-        }
-        // Right quadrant
-        else if (pRect.x > verticalMidpoint)
+        // Check if object is in just right quad
+        if (pRect.x + pRect.width > verticalMidpoint)
         {
             // Top-right
             if (topQuadrant)
+            {
                 index = 0;
+            }
             // Bottom-right
             else if (bottomQuadrant)
+            {
                 index = 3;
-        }
+            }
 
+        }
+        // Check if object is in just left quad
+        else if (pRect.x - pRect.width < verticalMidpoint)
+        {
+            // Top-left
+            if (topQuadrant)
+            {
+                index = 1;
+            }
+            // Bottom-left
+            else if (bottomQuadrant)
+            {
+                index = 2;
+            }
+        }
         return index;
     }
-
     public void Insert(Rect pRect)
     {
         if (children[0] != null)
@@ -138,22 +140,14 @@ public class QuadTree
         Debug.DrawLine(bottomLeftPoint, topLeftPoint, Color.red, 100f);       //leftLine
         Debug.DrawLine(bottomRightPoint, topRightPoint, Color.red, 100f);     //rightLine
         Debug.DrawLine(topLeftPoint, topRightPoint, Color.red, 100f);         //topLine
-
-        if (divided)
-        {
-            children[0].ShowBoundries();
-            children[1].ShowBoundries();
-            children[2].ShowBoundries();
-            children[3].ShowBoundries();
-        }
     }
 
     public void ShowBound(float x, float y, float h, float w)
     {
-        Vector2 bottomLeftPoint = new Vector2(x - w, y - h);
-        Vector2 bottomRightPoint = new Vector2(x + w, y - h);
+        Vector2 bottomLeftPoint = new Vector2(x, y);
+        Vector2 bottomRightPoint = new Vector2(x + w, y);
         Vector2 topRightPoint = new Vector2(x + w, y + h);
-        Vector2 topLeftPoint = new Vector2(x - w, y + h);
+        Vector2 topLeftPoint = new Vector2(x, y + h);
 
         Debug.DrawLine(bottomLeftPoint, bottomRightPoint, Color.green, 50f);   //bottomLine
         Debug.DrawLine(bottomLeftPoint, topLeftPoint, Color.green, 50f);       //leftLine

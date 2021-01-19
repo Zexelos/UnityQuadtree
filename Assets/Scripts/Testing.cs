@@ -9,16 +9,13 @@ public class Testing : MonoBehaviour
 
     void Start()
     {
-        quadTree = new QuadTree(0, new Rect(0, 0, 20, 20));
+        quadTree = new QuadTree(0, new Rect(Vector2.zero, new Vector2(20, 20)));
         quadTree.ShowBound(0, 0, 20, 20);
     }
 
     void Update()
     {
-
         quadTree.Clear();
-
-        quadTree.ShowBoundries();
 
         ClickToAddPoint();
     }
@@ -27,10 +24,7 @@ public class Testing : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            if (Input.GetMouseButtonDown(0))
-            {
-                allObjects.Add(new Rect(Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0)), new Vector2(0.2f, 0.2f)));
-            }
+            allObjects.Add(new Rect(Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0)), new Vector2(0.2f, 0.2f)));
 
             for (int i = 0; i < allObjects.Count; i++)
             {
