@@ -9,8 +9,6 @@ public class QuadTree
     int maxObjects = 1;
 
     QuadTree[] children;
-    float width;
-    float height;
     int level;
     bool divided;
 
@@ -20,8 +18,6 @@ public class QuadTree
         this.bounds = bounds;
         this.objectList = new List<Rect>();
         children = new QuadTree[4];
-        width = bounds.max.x - bounds.max.x;
-        height = bounds.max.y - bounds.max.y;
     }
 
     public void Clear()
@@ -40,10 +36,10 @@ public class QuadTree
 
     void Split()
     {
-        int subWidth = (int)(bounds.width / 2);
-        int subHeight = (int)(bounds.height / 2);
-        int x = (int)bounds.x;
-        int y = (int)bounds.y;
+        float subWidth = bounds.width / 2;
+        float subHeight = bounds.height / 2;
+        float x = bounds.x;
+        float y = bounds.y;
 
         children[0] = new QuadTree(level + 1, new Rect(x + subWidth, y, subWidth, subHeight));
         children[1] = new QuadTree(level + 1, new Rect(x, y, subWidth, subHeight));
@@ -51,7 +47,6 @@ public class QuadTree
         children[3] = new QuadTree(level + 1, new Rect(x + subWidth, y + subHeight, subWidth, subHeight));
 
         divided = true;
-        ShowBoundries();
     }
 
     int GetIndex(Rect pRect)

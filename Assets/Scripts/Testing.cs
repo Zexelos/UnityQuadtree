@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -16,16 +15,35 @@ public class Testing : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            allObjects.Add(new Rect(Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0)), new Vector2(0.2f, 0.2f)));
-        }
 
         quadTree.Clear();
 
-        for (int i = 0; i < allObjects.Count; i++)
+        quadTree.ShowBoundries();
+
+        ClickToAddPoint();
+    }
+
+    void ClickToAddPoint()
+    {
+        if (Input.GetMouseButtonDown(0))
         {
-            quadTree.Insert(allObjects[i]);
+            if (Input.GetMouseButtonDown(0))
+            {
+                allObjects.Add(new Rect(Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0)), new Vector2(0.2f, 0.2f)));
+            }
+
+            for (int i = 0; i < allObjects.Count; i++)
+            {
+                quadTree.Insert(allObjects[i]);
+            }
+        }
+    }
+    void OnDrawGizmos()
+    {
+        foreach (var item in allObjects)
+        {
+            Gizmos.DrawCube(new Vector3(item.x + item.width / 2, item.y + item.height / 2, 0), new Vector3(0.2f, 0.2f, 0f));
         }
     }
 }
+
